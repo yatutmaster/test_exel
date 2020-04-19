@@ -11,6 +11,7 @@ function exception_error_handler($severity, $message, $file, $line)
 set_error_handler("exception_error_handler");
 
 
+
 // загрузка файла
 $fileSize = 1000000; //1mb
 
@@ -18,10 +19,15 @@ if (!$file = $_FILES['userfile']['tmp_name'] ?? 0 or $_FILES['userfile']['error'
     die('Файл не загружен, или загружен с ошибкой');
 }
 
+if ($_FILES['userfile']['type'] != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+    die('Загруженый файл не является XLSX файлом!');
+}
 
 if ($_FILES['userfile']['size'] > $fileSize) {
     die('Файл слишком большой, макс. размер 1mb');
 }
+
+
 
 
 require 'vendor/autoload.php';
@@ -36,7 +42,7 @@ try {
     $spreadsheet = $reader->load($file);
 } catch (Throwable $e) {
 
-    die('Загруженый файл не является XLSX файлом!');
+    die('Не удалось прочесть XLSX файл!');
 }
 
 
